@@ -1,0 +1,147 @@
+/* HIV positive patient */
+Condition HIV_positive_patient:
+	'HIV test result' is positive
+		
+/* Patient presenting with Anaemia */	
+Condition anaemic_patient:
+	anaemia is present
+	
+/* Patient presenting with active TB */	
+Condition TB_patient:
+	'TB' is present
+	
+/* Patient presenting with Jaundice */	
+Condition jaundice_patient:
+	'Jaundice' is present
+
+/* Patient presenting with pregnancy */	
+Condition pregnant_patient:
+	'Pregnant woman' is present
+
+/* Patient is in labour */	
+Condition in_labour:
+	'In labour' is present
+
+/* Patient presenting with renal failure */	
+Condition with_renal_failure:
+	'Renal failure' is present
+
+/* Second trimester of pregnancy */	
+Condition second_trimester:
+	trimester is 2
+
+/* Adult patient's minimum age */	
+Condition adult_minimum_age:
+ 	age >= 15 years
+	
+/* Child patient's minimum age */	
+Condition child_minimum_age:
+ 	age >= 6 weeks
+ 	
+/* Child patient's maximum age */	
+Condition child_maximum_age:
+ 	age <= 14 years 	
+
+/* Younger child patient's maximum age */	
+Condition younger_child_maximum_age:
+ 	age < 3 years 	
+
+/* Younger child patient's maximum age */	
+Condition older_child_minimum_age:
+ 	age >= 3 years 	
+
+/* Patient not on ART */	
+Condition not_on_ART:
+ 	'On ART' is 'NO'
+	
+/* Prescribe first-line ART for adults */
+Action prescribe_ART_regimen_1_adult:
+  prescribe "1A - d4T/3TC/NVP"
+
+/* Prescribe first-line ART for children*/
+Action prescribe_ART_regimen_1_paeds:
+  prescribe "1P - d4T/3TC/NVP"
+
+/* Prescribe ART regimen 2 paeds */
+Action prescribe_ART_regimen_2_paeds:
+  prescribe "2P - AZT/3TC/NVP"
+
+/* Prescribe ART regimen 4 paeds */
+Action prescribe_ART_regimen_4_paeds:
+  prescribe "4P - AZT/3TC+EFV"
+  
+/* Prescribe ART regimen 3 */
+Action prescribe_ART_regimen_3_adult:
+  prescribe "3A - d4T/3TC+EFV"
+  
+/* Prescribe ART regimen 4 */
+Action prescribe_ART_regimen_4_adult:
+  prescribe "4A - AZT/3TC+EFV"
+
+/* Prescribe ART regimen 5 */
+Action prescribe_ART_regimen_5_adult:
+  prescribe "5A - TDF/3TC/EFV"
+
+/* Flag as eligible for ART */
+Action flag_eligible_for_ART:
+  "Flag patient for" "ART"
+
+/* Refer to district or central hospital */
+Action refer_to_tertiary_hospital:
+  "Refer to other hospital" "Tertiary hospital"
+
+/* Recommendation to manage HIV+ & anaemic patients in adults */
+Recommendation HIV_with_anaemia_in_adults:
+	Conditions HIV_positive_patient, not_on_ART, anaemic_patient, adult_minimum_age 
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_1_adult			
+	
+/* Recommendation to manage HIV+ & anaemic patients in children */
+Recommendation HIV_with_anaemia_in_children:
+	Conditions  HIV_positive_patient, not_on_ART, anaemic_patient, child_minimum_age, child_maximum_age
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_1_paeds				
+
+/* Recommendation to manage HIV+ & TB patients - adults*/
+Recommendation HIV_with_TB_in_adults:
+	Conditions HIV_positive_patient, not_on_ART, TB_patient, adult_minimum_age  
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_5_adult
+
+/* Recommendation to manage HIV+ & TB patients - younger children */
+Recommendation HIV_with_TB_in_children:
+	Conditions HIV_positive_patient, not_on_ART,  TB_patient, child_minimum_age, younger_child_maximum_age 
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_2_paeds			
+
+/* Recommendation to manage HIV+ & TB patients - older children */
+Recommendation HIV_with_TB_in_older_children:
+	Conditions  HIV_positive_patient, not_on_ART, TB_patient, older_child_minimum_age, child_maximum_age
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_4_paeds
+	
+/* Recommendation to manage HIV+ & Jaundice patients - children */
+Recommendation HIV_with_jaundice_in_children:
+	Conditions HIV_positive_patient, not_on_ART, jaundice_patient, child_minimum_age, child_maximum_age
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_4_paeds, refer_to_tertiary_hospital
+	
+/* Recommendation to manage HIV+ & Jaundice patients - adults */
+Recommendation HIV_with_jaundice_in_adults:
+	Conditions  HIV_positive_patient, not_on_ART, jaundice_patient, adult_minimum_age
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_3_adult, refer_to_tertiary_hospital
+
+/* Recommendation to manage HIV+ & pregnant patients */
+Recommendation HIV_with_pregnancy:
+	Conditions HIV_positive_patient, not_on_ART, pregnant_patient, second_trimester
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_5_adult
+
+/* Recommendation to manage HIV+ patients in labour */
+Recommendation HIV_and_in_labour:
+	Conditions HIV_positive_patient, not_on_ART, in_labour
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_5_adult
+	
+/* Recommendation to manage HIV+ & renal failure patients in children */
+Recommendation HIV_with_renal_failure_in_children:
+	Conditions HIV_positive_patient, not_on_ART, with_renal_failure, child_minimum_age, child_maximum_age
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_2_paeds, refer_to_tertiary_hospital
+	
+/* Recommendation to manage HIV+ & renal failure patients in adults */
+Recommendation HIV_with_renal_failure_in_adults:
+	Conditions HIV_positive_patient, not_on_ART, with_renal_failure, adult_minimum_age
+	Actions flag_eligible_for_ART, prescribe_ART_regimen_4_adult, refer_to_tertiary_hospital
+	

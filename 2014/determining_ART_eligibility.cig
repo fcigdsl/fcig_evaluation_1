@@ -1,0 +1,128 @@
+/* Patient not on ART */	
+Condition not_on_ART:
+ 	'On ART' is No
+	
+/* Positive rapid HIV test result */
+Condition positive_rapid_HIV_test:
+	'HIV rapid test result' is positive
+		
+/* Positive DNA-PCR test result */	
+Condition positive_DNA_PCR_test:
+	'DNA-PCR test result' is positive
+	
+/* Maximum age of an infant */	
+Condition infant_under_12_months:
+	age < 12 months
+	
+/* Maximum age of a child under 60 months */	
+Condition child_under_60_months:
+	age < 60 months
+
+/* Minimum age of a very young child under 24 months (from 12 months) */	
+Condition child_from_12_months:
+	age >= 12 months
+
+/* Minimum age of children and adults */	
+Condition child_from_5_years:
+	age >= 5 years
+
+/* CD4 count threshold for adults */	
+Condition adult_CD4_count_threshold:
+	'CD4 count' <= 500 'cells/mm3'	
+
+/* Asymptomatic to mild HIV clinical stage */	
+Condition asymptomatic_to_mild_HIV:
+	'WHO clinical stage' is 'WHO stage 1/2'	
+
+/* Advanced to severe HIV clinical stage */	
+Condition advanced_to_severe_HIV:
+	'WHO clinical stage' is 'WHO stage 3/4'	
+
+/* Patient presenting with Oral Candidiasis */	
+Condition with_oral_candidiasis:
+	'Oral candidiasis' is present
+	
+/* Patient presenting with Severe Sepsis */	
+Condition with_severe_sepsis:
+	'Severe Sepsis' is present
+	
+/* Patient presenting with Pneumonia */	
+Condition with_pneumonia:
+	'Pneumonia' is present
+
+/* Patient presenting with pregnancy */	
+Condition pregnant_patient:
+	'Pregnant woman' is Yes
+
+/* Breastfeeding woman */	
+Condition breastfeeding_woman:
+	'Breastfeeding' is Yes
+
+/* Flag as eligible for ART */
+Action flag_eligible_for_ART:
+  "Flag patient for" "ART"
+
+/* Recommendation for determining ART eligibility in infants */
+Recommendation ART_eligibility_in_infants:
+	Conditions not_on_ART, positive_DNA_PCR_test, infant_under_12_months 
+	Actions flag_eligible_for_ART			
+	
+/* Recommendation for determining ART eligibility in infants with PSHD with Oral Candidiasis 
+ * and Severe Pneuminia
+ */
+Recommendation ART_eligibility_in_PSHD_candidiasis_and_pneumonia:
+	Conditions not_on_ART, with_oral_candidiasis, with_pneumonia, 
+		positive_rapid_HIV_test, infant_under_12_months
+	Actions flag_eligible_for_ART			
+	
+/* Recommendation for determining ART eligibility in infants with PSHD with Oral Candidiasis 
+ * and Severe Sepsis
+ */
+Recommendation ART_eligibility_in_PSHD_candidiasis_and_sepsis:
+	Conditions not_on_ART, with_oral_candidiasis, with_severe_sepsis, 
+		positive_rapid_HIV_test, infant_under_12_months
+	Actions flag_eligible_for_ART			
+	
+/* Recommendation for determining ART eligibility in infants with PSHD with Severe Pneumonia 
+ * and Severe Sepsis
+ */
+Recommendation ART_eligibility_in_PSHD_pneumonia_and_sepsis:
+	Conditions not_on_ART, with_pneumonia, with_severe_sepsis, 
+		positive_rapid_HIV_test, infant_under_12_months
+	Actions flag_eligible_for_ART			
+
+/* Recommendation for determining universal ART eligibility in children  */
+Recommendation universal_ART_eligibility_in_children:
+	Conditions not_on_ART, child_from_12_months, child_under_60_months
+	Actions flag_eligible_for_ART			
+	
+/* Recommendation for determining ART eligibility in breastfeeding women*/
+Recommendation ART_eligibility_in_breastfeeding_women:
+	Conditions not_on_ART, positive_rapid_HIV_test, breastfeeding_woman, child_from_5_years 
+	Actions flag_eligible_for_ART		
+
+/* Recommendation for determining ART eligibility in pregnant women */
+Recommendation HIV_with_pregnancy:
+	Conditions not_on_ART, positive_rapid_HIV_test, pregnant_patient, child_from_5_years
+	Actions flag_eligible_for_ART
+
+/* Recommendation for determining ART eligibility in children and adults agerd 5 and above with 
+ * asymptomatic to mild HIV disease
+ */
+Recommendation ART_eligibility_in_patients_from_5_years_with_mild_HIV:
+	Conditions not_on_ART, child_from_5_years, positive_rapid_HIV_test, 
+		adult_CD4_count_threshold, asymptomatic_to_mild_HIV
+	Actions flag_eligible_for_ART			
+	
+/* Recommendation for determining ART eligibility in children and adults aged 5 years and above
+ * with advanced to severe HIV disease
+ */
+Recommendation ART_eligibility_in_patients_from_5_years_with_severe_HIV:
+	Conditions not_on_ART, positive_rapid_HIV_test, advanced_to_severe_HIV,
+ 		child_from_5_years 
+	Actions flag_eligible_for_ART			
+	
+
+		
+
+		
